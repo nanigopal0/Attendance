@@ -11,7 +11,8 @@ class ClassRepository(private val classDao: ClassDao) {
 
     suspend fun deleteClass(classEntity: ClassEntity) = classDao.deleteClass(classEntity)
 
-    suspend fun deleteClassCorrespondingSemId(semId: Int) = classDao.deleteClassCorrespondingSemId(semId)
+    suspend fun deleteClassCorrespondingSemId(semId: Int) =
+        classDao.deleteClassCorrespondingSemId(semId)
 
     fun getClass(className: String): Flow<ClassEntity?> = classDao.getClass(className)
 

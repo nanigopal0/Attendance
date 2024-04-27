@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import com.rk.attendence.sharedpref.LocalData
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.Calendar
 import java.util.Date
@@ -26,7 +25,7 @@ class AlarmSchedulerImplement(private val context: Context) : AlarmScheduler {
         }
 
         if (isAlarmScheduled) {
-            println( alarmManager.nextAlarmClock)
+            println(alarmManager.nextAlarmClock)
             println("Alarm already scheduled")
         } else {
             val localDateTime = localDate.atStartOfDay()

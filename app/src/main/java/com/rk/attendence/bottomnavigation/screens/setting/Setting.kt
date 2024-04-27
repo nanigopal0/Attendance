@@ -80,7 +80,7 @@ fun Settings(sharedViewmodel: SharedViewmodel, onClick: (Int) -> Unit) {
             modifier = Modifier.padding(vertical = 40.dp)
         )
 
-        Row (modifier = Modifier.padding(start = 10.dp)){
+        Row(modifier = Modifier.padding(start = 10.dp)) {
             Text(
                 text = "Default Semester ",
                 style = MaterialTheme.typography.titleMedium
@@ -132,12 +132,13 @@ fun Settings(sharedViewmodel: SharedViewmodel, onClick: (Int) -> Unit) {
             modifier = Modifier.padding(top = 20.dp, bottom = 5.dp)
         )
         TextButton(
-            onClick = { onClick(2)},
+            onClick = { onClick(2) },
             colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface)
         ) {
             Text(
                 text = "Notification",
-                style = MaterialTheme.typography.titleMedium)
+                style = MaterialTheme.typography.titleMedium
+            )
         }
         HorizontalDivider(
             color = Color.LightGray,
@@ -159,7 +160,8 @@ fun Settings(sharedViewmodel: SharedViewmodel, onClick: (Int) -> Unit) {
             modifier = Modifier.padding(vertical = 5.dp)
         )
         TextButton(
-            onClick = { onClick.invoke(1)
+            onClick = {
+                onClick.invoke(1)
             },
             colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface)
         ) {

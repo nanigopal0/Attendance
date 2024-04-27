@@ -48,9 +48,9 @@ class AlarmReceiver : BroadcastReceiver() {
 
 
     fun createAlarmForTodayClasses(context: Context) {
-    //Get All today's classes
-    val currentDay =
-        LocalDate.now().dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
+        //Get All today's classes
+        val currentDay =
+            LocalDate.now().dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
         var job: Job? = null
         job = CoroutineScope(Dispatchers.IO).launch {
             SingletonDBConnection.classRepo.getTodayClasses(

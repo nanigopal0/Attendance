@@ -2,9 +2,6 @@ package com.rk.attendence.sharedpref
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.JsonReader
-import org.json.JSONArray
-import org.json.JSONObject
 
 object LocalData {
     private const val PREFS_NAME = "UserInfo"
@@ -29,16 +26,19 @@ object LocalData {
     fun deleteData() {
         sharedPreferences.edit().clear().apply()
     }
-    fun removeKey(key: String){
+
+    fun removeKey(key: String) {
         sharedPreferences.edit().remove(key).apply()
     }
 
     fun getBoolean(key: String, defaultValue: Boolean = false): Boolean {
-        return sharedPreferences.getBoolean(key,defaultValue)
+        return sharedPreferences.getBoolean(key, defaultValue)
     }
-    fun setBoolean(key: String,value: Boolean){
+
+    fun setBoolean(key: String, value: Boolean) {
         sharedPreferences.edit().putBoolean(key, value).apply()
     }
+
     fun getInt(key: String, defaultValue: Int = 0): Int {
         return sharedPreferences.getInt(key, defaultValue)
     }

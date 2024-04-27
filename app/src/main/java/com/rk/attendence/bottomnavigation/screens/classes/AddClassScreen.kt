@@ -153,17 +153,21 @@ fun AddClassScreen(onClick: (Int) -> Unit) {
             )
 
             LazyColumn {
-                items(state.value.dbDayList){dbDay->
+                items(state.value.dbDayList) { dbDay ->
                     CheckBoxDay(text = dbDay, onClickViewmodel)
                 }
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !checkNotificationPermission(context)) {
-                val notificationReq = notificationRequest(addClassViewmodel.returnCallbackRequestPermission(context))
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !checkNotificationPermission(
+                    context
+                )
+            ) {
+                val notificationReq =
+                    notificationRequest(addClassViewmodel.returnCallbackRequestPermission(context))
                 if (shouldShowNotificationReqDialog.value) {
                     AlertDialog(onDismissRequest = {
                         shouldShowNotificationReqDialog.value = false
                     }, text = {
-                               Text(text = "Please allow the notification permission so that app can notify at the time of attendance")
+                        Text(text = "Please allow the notification permission so that app can notify at the time of attendance")
                     },
                         confirmButton = {
                             Button(onClick = {

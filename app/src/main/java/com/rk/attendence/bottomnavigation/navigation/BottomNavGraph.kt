@@ -15,10 +15,10 @@ import com.rk.attendence.bottomnavigation.screens.dashboard.DashBoardScreen
 import com.rk.attendence.bottomnavigation.screens.details.DetailsScreen
 import com.rk.attendence.bottomnavigation.screens.semester.AddSemesterScreen
 import com.rk.attendence.bottomnavigation.screens.semester.EditSemesterScreen
+import com.rk.attendence.bottomnavigation.screens.setting.Settings
 import com.rk.attendence.bottomnavigation.screens.setting.daterangepicker.DateRangePickerScreen
 import com.rk.attendence.bottomnavigation.screens.setting.getpercentage.GetPercentage
 import com.rk.attendence.bottomnavigation.screens.setting.notification.Notification
-import com.rk.attendence.bottomnavigation.screens.setting.Settings
 import com.rk.attendence.bottomnavigation.screens.shared.SharedViewmodel
 import com.rk.attendence.sharedpref.LocalData
 import com.rk.attendence.splash.NameScreen

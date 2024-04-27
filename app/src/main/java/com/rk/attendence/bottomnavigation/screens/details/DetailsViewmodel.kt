@@ -30,6 +30,7 @@ class DetailsViewmodel(
     private val nowLocalDate = LocalDate.now()
     var selectedDate: LocalDate = LocalDate.now()       //Name of the day of the selected date
     private var allClassesSeparateDay: Map<String, List<ClassToAttendance>> = emptyMap()
+
     //Contain all classes in everyday here string is day
     private var currentSemester = SemesterEntity(
         0, "", "", emptyList(), LocalDate.now()

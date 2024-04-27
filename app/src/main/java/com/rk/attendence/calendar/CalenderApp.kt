@@ -7,66 +7,22 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.rk.attendence.calendar.util.DateUtil
 import com.rk.attendence.calendar.util.getDisplayName
 import java.time.LocalDate
 import java.time.YearMonth
-
-
-@Preview(showSystemUi = true)
-@Composable
-fun CalendarAppPreview() {
-    CalendarApp()
-}
-
-@Composable
-fun CalendarApp(
-    viewModel: CalendarViewModel = viewModel(),
-) {
-    val uiState by viewModel.uiState.collectAsState()
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        CalendarWidget(
-            days = DateUtil.daysOfWeek,
-            yearMonth = uiState.yearMonth,
-            dates = uiState.dates,
-            onPreviousMonthButtonClicked = { prevMonth ->
-                viewModel.toPreviousMonth(prevMonth)
-            },
-            onNextMonthButtonClicked = { nextMonth ->
-                viewModel.toNextMonth(nextMonth)
-            },
-            onDateClickListener = {
-
-                // TODO("set on date click listener")
-            }
-        )
-    }
-
-}
 
 @Composable
 fun CalendarWidget(

@@ -42,7 +42,10 @@ class SettingsViewmodel(
             } catch (e: Exception) {
                 0
             }
-            LocalData.setInt(LocalData.CURRENT_SEMESTER_ID,semesterToClassToAttendance.semesterEntity.id)
+            LocalData.setInt(
+                LocalData.CURRENT_SEMESTER_ID,
+                semesterToClassToAttendance.semesterEntity.id
+            )
             _state.update {
                 it.copy(
                     currentSemester = semesterToClassToAttendance.semesterEntity,

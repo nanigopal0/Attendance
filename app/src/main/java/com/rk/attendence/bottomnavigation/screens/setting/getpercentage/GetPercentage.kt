@@ -32,7 +32,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.rk.attendence.bottomnavigation.screens.setting.getpercentage.GetPercentageViewmodel
 import com.rk.attendence.bottomnavigation.screens.shared.SharedViewmodel
 import com.rk.attendence.sharedpref.LocalData
 import java.text.SimpleDateFormat
@@ -126,7 +125,9 @@ fun GetPercentage(sharedViewmodel: SharedViewmodel, onClick: () -> Unit) {
                             text = "${
                                 try {
                                     classEntity.present * 100 / (classEntity.present + classEntity.absent)
-                                } catch (e: Exception) { 0 }
+                                } catch (e: Exception) {
+                                    0
+                                }
                             }%",
                             modifier = Modifier,
                             style = MaterialTheme.typography.titleLarge

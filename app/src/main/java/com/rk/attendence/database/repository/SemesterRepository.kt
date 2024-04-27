@@ -6,9 +6,7 @@ import com.rk.attendence.database.entity.ClassEntity
 import com.rk.attendence.database.entity.SemesterEntity
 import com.rk.attendence.database.relations.SemesterToClassToAttendance
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import java.time.LocalDate
 
 class SemesterRepository(private val semesterDao: SemesterDao) {
@@ -61,7 +59,7 @@ class SemesterRepository(private val semesterDao: SemesterDao) {
         }
     }
 
-    fun getAllClassAttend(semId: Int): Flow<SemesterToClassToAttendance?>{
+    fun getAllClassAttend(semId: Int): Flow<SemesterToClassToAttendance?> {
         return semesterDao.getAllClassAndAttendance(semId)
     }
 

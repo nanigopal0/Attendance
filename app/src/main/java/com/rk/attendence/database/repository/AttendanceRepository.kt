@@ -15,7 +15,8 @@ class AttendanceRepository(private val attendanceDao: AttendanceDao) {
 
     fun getAllAttendance(): Flow<List<AttendanceEntity>> = attendanceDao.getAllAttendance()
 
-    suspend fun deleteAttendanceCorrespondingSemId(semId: Int) = attendanceDao.deleteAttendanceCorrespondingSemId(semId)
+    suspend fun deleteAttendanceCorrespondingSemId(semId: Int) =
+        attendanceDao.deleteAttendanceCorrespondingSemId(semId)
 
     fun getAttendanceFromRange(
         startDate: LocalDate,

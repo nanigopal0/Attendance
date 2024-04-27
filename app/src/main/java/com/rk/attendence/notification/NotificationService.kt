@@ -30,8 +30,8 @@ class NotificationService(
                     data = it
                 }
             }
-        }catch (e: Exception) {
-            data = Gson().fromJson(dataLocal,LocalDataInNotification::class.java)
+        } catch (e: Exception) {
+            data = Gson().fromJson(dataLocal, LocalDataInNotification::class.java)
         }
         println(data)
         val intent = Intent(context, MainActivity::class.java).apply {
@@ -92,7 +92,8 @@ class NotificationService(
 
         notificationManager.notify(notificationId, notification)
     }
-    fun hideNotification(){
+
+    fun hideNotification() {
         notificationManager.cancel(notificationId)
     }
 

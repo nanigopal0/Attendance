@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -43,11 +42,9 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rk.attendence.alarm.AlarmScheduleForSubject
 import com.rk.attendence.bottomnavigation.screens.shared.SharedViewmodel
-import com.rk.attendence.notification.NotificationService
 import com.rk.attendence.sharedpref.LocalData
 
 @Composable
@@ -83,8 +80,11 @@ fun DashBoardScreen(sharedViewmodel: SharedViewmodel, function: (Int) -> Unit) {
         floatingActionButton = {
             if (isFabVisible) {
                 FloatingActionButton(onClick = {
-                    if (state.value.semesterEntity.semesterName.isEmpty()) { function(2) }
-                    else { function(1) }
+                    if (state.value.semesterEntity.semesterName.isEmpty()) {
+                        function(2)
+                    } else {
+                        function(1)
+                    }
                 }) {
                     Icon(imageVector = Icons.Filled.Add, contentDescription = "Add class")
                 }
@@ -140,7 +140,7 @@ fun DashBoardScreen(sharedViewmodel: SharedViewmodel, function: (Int) -> Unit) {
                             Row(modifier = Modifier
                                 .border(
                                     1.dp,
-                                    color =  if (expandLazyListItem == classEntity.classEntity.className) MaterialTheme.colorScheme.onSurface else Color.LightGray,
+                                    color = if (expandLazyListItem == classEntity.classEntity.className) MaterialTheme.colorScheme.onSurface else Color.LightGray,
                                     RoundedCornerShape(if (expandLazyListItem == classEntity.classEntity.className) 10 else 20)
                                 )
                                 .clickable {

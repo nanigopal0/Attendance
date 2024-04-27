@@ -1,9 +1,7 @@
 package com.rk.attendence.bottomnavigation.screens.dashboard
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rk.attendence.alarm.AlarmScheduleForSubject
 import com.rk.attendence.database.dbconnection.SingletonDBConnection
 import com.rk.attendence.database.entity.AttendanceEntity
 import com.rk.attendence.database.entity.ClassEntity

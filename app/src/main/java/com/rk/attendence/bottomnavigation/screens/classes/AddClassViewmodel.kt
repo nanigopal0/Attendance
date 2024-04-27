@@ -94,43 +94,45 @@ class AddClassViewmodel(
         }
     }
 
-     fun scheduledAlarm(context: Context) {
-         val currentDay =
-             LocalDate.now().dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
-         val time = dayTimeMap[currentDay]
-         if (time != null) {
-             println("time is $time")
-             val calendar = Calendar.getInstance().apply {
-                 timeInMillis = System.currentTimeMillis()
-                 set(Calendar.HOUR_OF_DAY, time.substring(0, 2).toInt())
-                 set(Calendar.MINUTE, time.substring(3, 5).toInt())
-                 set(Calendar.SECOND, 0)
-             }
-             println("add class viewmodel" + calendar.time)
-             println("add class viewmodel" + calendar.timeInMillis)
-             AlarmScheduleForSubject(context).alarmCreate(
-                 classId = LocalData.getInt(LocalData.CLASS_ID) + 1,
-                 time = calendar.timeInMillis
-             )
-             //Scheduled alarm after next day
-             val alarm = AlarmSchedulerImplement(context as Activity)
-             alarm.schedule(LocalDate.now())
-         }
-     }
+    fun scheduledAlarm(context: Context) {
+        val currentDay =
+            LocalDate.now().dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
+        val time = dayTimeMap[currentDay]
+        if (time != null) {
+            println("time is $time")
+            val calendar = Calendar.getInstance().apply {
+                timeInMillis = System.currentTimeMillis()
+                set(Calendar.HOUR_OF_DAY, time.substring(0, 2).toInt())
+                set(Calendar.MINUTE, time.substring(3, 5).toInt())
+                set(Calendar.SECOND, 0)
+            }
+            println("add class viewmodel" + calendar.time)
+            println("add class viewmodel" + calendar.timeInMillis)
+            AlarmScheduleForSubject(context).alarmCreate(
+                classId = LocalData.getInt(LocalData.CLASS_ID) + 1,
+                time = calendar.timeInMillis
+            )
+            //Scheduled alarm after next day
+            val alarm = AlarmSchedulerImplement(context as Activity)
+            alarm.schedule(LocalDate.now())
+        }
+    }
 
     private fun setDataInLocalStorage() {
         var classId = LocalData.getInt(LocalData.CLASS_ID)
-        val localDataInNotification =  LocalDataInNotification(ClassEntity(
-            id = ++classId,
-            semesterId = LocalData.getInt(LocalData.CURRENT_SEMESTER_ID),
-            classStartTime = dayTimeMap.toMap(),
-            className = state.value.className,
-            present = 0,
-            absent = 0,
-            cancel = 0
-        ),false)
+        val localDataInNotification = LocalDataInNotification(
+            ClassEntity(
+                id = ++classId,
+                semesterId = LocalData.getInt(LocalData.CURRENT_SEMESTER_ID),
+                classStartTime = dayTimeMap.toMap(),
+                className = state.value.className,
+                present = 0,
+                absent = 0,
+                cancel = 0
+            ), false
+        )
         val data = Gson().toJson(localDataInNotification)
-        LocalData.setString(LocalData.TODAY_CLASS,data)
+        LocalData.setString(LocalData.TODAY_CLASS, data)
     }
 
     fun onClickEventFunction(onClickEvent: OnClickEvent) {
