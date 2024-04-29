@@ -39,7 +39,7 @@ import com.rk.attendence.alarm.AlarmScheduleForSubject
 import com.rk.attendence.alarm.AlarmSchedulerImplement
 import com.rk.attendence.notification.LocalDataInNotification
 import com.rk.attendence.sharedpref.LocalData
-import java.time.LocalDate
+import java.util.Calendar
 
 
 @Composable
@@ -53,10 +53,13 @@ fun Notification(onClick: () -> Unit) {
             val notificationReq = notificationRequest {
                 if (it) {
                     LocalData.setBoolean(LocalData.NOTIFICATION, true)
-                    AlarmScheduleForSubject(context).createNotificationChannel(context)
-                    AlarmReceiver().createAlarmForTodayClasses(context)
-                    val alarm = AlarmSchedulerImplement(context)
-                    alarm.schedule(LocalDate.now())
+                    if (LocalData.getInt(LocalData.CLASS_ID) > 0) {
+                        LocalData.setBoolean(LocalData.BROADCAST_CLASS, false)
+//                    AlarmScheduleForSubject(context).createNotificationChannel(context)
+//                    AlarmReceiver().createAlarmForTodayClasses(context)
+                        val alarm = AlarmSchedulerImplement(context)
+                        alarm.schedule(Calendar.getInstance().timeInMillis)
+                    }
                     call.value = true
                     println("Permission granted")
                 } else {
@@ -76,13 +79,15 @@ fun Notification(onClick: () -> Unit) {
             requestActivityCompose {
                 if (it.resultCode == Activity.RESULT_OK && checkNotificationPermission(context)) {
                     LocalData.setBoolean(LocalData.NOTIFICATION, true)
-                    AlarmScheduleForSubject(context).createNotificationChannel(context)
+                    if (LocalData.getInt(LocalData.CLASS_ID) > 0) {
+                        LocalData.setBoolean(LocalData.BROADCAST_CLASS, false)
+//                    AlarmScheduleForSubject(context).createNotificationChannel(context)
+//                    AlarmReceiver().createAlarmForTodayClasses(context)
+                        val alarm = AlarmSchedulerImplement(context)
+                        alarm.schedule(Calendar.getInstance().timeInMillis)
+                    }
                     call.value = true
-                    AlarmReceiver().createAlarmForTodayClasses(context)
-                    val alarm = AlarmSchedulerImplement(context)
-                    alarm.schedule(LocalDate.now())
                 } else if (!checkNotificationPermission(context)) {
-                    LocalData.setBoolean(LocalData.NOTIFICATION, false)
                     LocalData.setBoolean(LocalData.NOTIFICATION, false)
                     val alarmManager = context.getSystemService(AlarmManager::class.java)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) alarmManager.cancelAll()
@@ -131,11 +136,11 @@ fun Notification(onClick: () -> Unit) {
                     if (isNotificationEnable.value) {
                         LocalData.setBoolean(LocalData.NOTIFICATION, true)
                         LocalData.setBoolean(LocalData.BROADCAST_CLASS, false)
-                        AlarmScheduleForSubject(context).createNotificationChannel(context)
+//                        AlarmScheduleForSubject(context).createNotificationChannel(context)
                         if (LocalData.getInt(LocalData.CLASS_ID) > 0) {
-                            AlarmReceiver().createAlarmForTodayClasses(context)
+//                            AlarmReceiver().createAlarmForTodayClasses(context)
                             val alarm = AlarmSchedulerImplement(context)
-                            alarm.schedule(LocalDate.now())
+                            alarm.schedule(Calendar.getInstance().timeInMillis)
                         }
                     } else {
                         LocalData.setBoolean(LocalData.NOTIFICATION, false)
@@ -171,7 +176,7 @@ fun requestActivityCompose(callback: (ActivityResult) -> Unit): ManagedActivityR
 fun checkNotificationPermission(context: Context): Boolean {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         ActivityCompat.checkSelfPermission(
-            context as Activity,
+            context,
             Manifest.permission.POST_NOTIFICATIONS
         ) == PackageManager.PERMISSION_GRANTED
     } else {
@@ -184,10 +189,15 @@ fun checkNotificationPermission(context: Context): Boolean {
 fun cancelled(context: Context, alarmManager: AlarmManager) {
     val today = LocalData.getString(LocalData.TODAY_CLASS)
     val type = object : TypeToken<List<LocalDataInNotification>>() {}.type
-    val dataList = Gson().fromJson<List<LocalDataInNotification>>(today, type)
     val alarmScheduleForSubject = AlarmScheduleForSubject(context)
-    dataList.forEach {
-        alarmScheduleForSubject.cancelAlarm(it.classEntity.id)
+    try {
+        val dataList = Gson().fromJson<List<LocalDataInNotification>>(today, type)
+        dataList.forEach {
+            alarmScheduleForSubject.cancelAlarm(it.classEntity.id)
+        }
+    } catch (e: Exception) {
+        val data = Gson().fromJson(today, LocalDataInNotification::class.java)
+        alarmScheduleForSubject.cancelAlarm(data.classEntity.id)
     }
     alarmManager.cancel(
         PendingIntent.getBroadcast(

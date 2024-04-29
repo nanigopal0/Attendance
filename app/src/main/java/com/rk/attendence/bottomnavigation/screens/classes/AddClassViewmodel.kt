@@ -99,22 +99,27 @@ class AddClassViewmodel(
             LocalDate.now().dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
         val time = dayTimeMap[currentDay]
         if (time != null) {
-            println("time is $time")
-            val calendar = Calendar.getInstance().apply {
-                timeInMillis = System.currentTimeMillis()
-                set(Calendar.HOUR_OF_DAY, time.substring(0, 2).toInt())
-                set(Calendar.MINUTE, time.substring(3, 5).toInt())
-                set(Calendar.SECOND, 0)
-            }
-            println("add class viewmodel" + calendar.time)
-            println("add class viewmodel" + calendar.timeInMillis)
-            AlarmScheduleForSubject(context).alarmCreate(
-                classId = LocalData.getInt(LocalData.CLASS_ID) + 1,
-                time = calendar.timeInMillis
-            )
+//            println("time is $time")
+//            val calendar = Calendar.getInstance().apply {
+//                timeInMillis = System.currentTimeMillis()
+//                set(Calendar.HOUR_OF_DAY, time.substring(0, 2).toInt())
+//                set(Calendar.MINUTE, time.substring(3, 5).toInt())
+//                set(Calendar.SECOND, 0)
+//            }
+//            println("add class viewmodel" + calendar.time)
+//            println("add class viewmodel" + calendar.timeInMillis)
+//            AlarmScheduleForSubject(context).alarmCreate(
+//                classId = LocalData.getInt(LocalData.CLASS_ID) + 1,
+//                time = calendar.timeInMillis
+//            )
             //Scheduled alarm after next day
+//            val calendar = Calendar.getInstance().apply {
+//                set(Calendar.HOUR_OF_DAY, 0)
+//                set(Calendar.MINUTE, 0)
+//            }
+            LocalData.setBoolean(LocalData.BROADCAST_CLASS, false)
             val alarm = AlarmSchedulerImplement(context as Activity)
-            alarm.schedule(LocalDate.now())
+            alarm.schedule(Calendar.getInstance().timeInMillis)
         }
     }
 

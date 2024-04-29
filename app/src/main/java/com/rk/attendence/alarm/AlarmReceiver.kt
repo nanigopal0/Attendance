@@ -18,6 +18,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.time.format.TextStyle
 import java.util.Calendar
 import java.util.Locale
@@ -47,7 +49,7 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
 
-    fun createAlarmForTodayClasses(context: Context) {
+    private fun createAlarmForTodayClasses(context: Context) {
         //Get All today's classes
         val currentDay =
             LocalDate.now().dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
@@ -72,6 +74,37 @@ class AlarmReceiver : BroadcastReceiver() {
                 list
             }.collect {
                 if (validateAlarm(context)) {
+                    val c = Calendar.getInstance()
+                    try {
+                        val nextDay = LocalDate.now().plusDays(1).dayOfWeek.getDisplayName(
+                            TextStyle.FULL,
+                            Locale.getDefault()
+                        )   //Next day of the current day
+                        val otherClasses =
+                            it.filter { ldn -> ldn.classEntity.classStartTime.keys.contains(nextDay) }
+                        val sortedTimeList =
+                            otherClasses.sortedBy { ct -> ct.classEntity.classStartTime[nextDay] }
+                        val hour =
+                            sortedTimeList[0].classEntity.classStartTime[nextDay]?.substring(0, 2)
+                                ?.toInt() ?: 0
+                        c.apply {
+                            timeInMillis = LocalDateTime.now().plusDays(1).toInstant(ZoneOffset.UTC)
+                                .toEpochMilli()
+                            set(Calendar.HOUR_OF_DAY, hour - 1)
+                            set(Calendar.MINUTE, 0)
+                        }
+                    } catch (e: Exception) {
+                        c.apply {
+                            timeInMillis =
+                                LocalDate.now().plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC)
+                                    .toEpochMilli()
+                            set(Calendar.HOUR_OF_DAY, 0)
+                            set(Calendar.MINUTE, 0)
+                        }
+                    }
+                    println(c.time)
+                    LocalData.setBoolean(LocalData.BROADCAST_CLASS, false)
+                    AlarmSchedulerImplement(context).schedule(c.timeInMillis)
                     it.forEach { classEntity ->
                         if (classEntity.classEntity.classStartTime[currentDay].toString() != "") {
                             val time = classEntity.classEntity.classStartTime[currentDay]
