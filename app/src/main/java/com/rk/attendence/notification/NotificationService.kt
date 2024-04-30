@@ -19,7 +19,7 @@ class NotificationService(
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     private val notificationId = 121
     fun showNotification(classId: Int) {
-        println("Enter in notification")
+//        println("Enter in notification")
         val dataLocal = LocalData.getString(LocalData.TODAY_CLASS)
         val type = object : TypeToken<List<LocalDataInNotification>>() {}.type
         var data: LocalDataInNotification? = null
@@ -33,7 +33,7 @@ class NotificationService(
         } catch (e: Exception) {
             data = Gson().fromJson(dataLocal, LocalDataInNotification::class.java)
         }
-        println(data)
+//        println(data)
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }

@@ -13,6 +13,6 @@ class AlarmBroadcastForSubject : BroadcastReceiver() {
         LocalData.initialize(context)
         SingletonDBConnection.provideContext(context)
         NotificationService(context).showNotification(classId)
-        println("alarm broadcast")
+//        println("alarm broadcast")
     }
 }

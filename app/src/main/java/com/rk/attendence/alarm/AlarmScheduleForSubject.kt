@@ -28,7 +28,7 @@ class AlarmScheduleForSubject(private val context: Context) {
             time,
             pendingIntent
         )
-        println("alarm set")
+//        println("alarm set")
     }
 
     fun createNotificationChannel(context: Context) {

@@ -75,34 +75,14 @@ class AlarmReceiver : BroadcastReceiver() {
             }.collect {
                 if (validateAlarm(context)) {
                     val c = Calendar.getInstance()
-                    try {
-                        val nextDay = LocalDate.now().plusDays(1).dayOfWeek.getDisplayName(
-                            TextStyle.FULL,
-                            Locale.getDefault()
-                        )   //Next day of the current day
-                        val otherClasses =
-                            it.filter { ldn -> ldn.classEntity.classStartTime.keys.contains(nextDay) }
-                        val sortedTimeList =
-                            otherClasses.sortedBy { ct -> ct.classEntity.classStartTime[nextDay] }
-                        val hour =
-                            sortedTimeList[0].classEntity.classStartTime[nextDay]?.substring(0, 2)
-                                ?.toInt() ?: 0
-                        c.apply {
-                            timeInMillis = LocalDateTime.now().plusDays(1).toInstant(ZoneOffset.UTC)
-                                .toEpochMilli()
-                            set(Calendar.HOUR_OF_DAY, hour - 1)
-                            set(Calendar.MINUTE, 0)
-                        }
-                    } catch (e: Exception) {
                         c.apply {
                             timeInMillis =
                                 LocalDate.now().plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC)
                                     .toEpochMilli()
-                            set(Calendar.HOUR_OF_DAY, 0)
+                            set(Calendar.HOUR_OF_DAY, 1)
                             set(Calendar.MINUTE, 0)
-                        }
                     }
-                    println(c.time)
+//                    println(c.time)
                     LocalData.setBoolean(LocalData.BROADCAST_CLASS, false)
                     AlarmSchedulerImplement(context).schedule(c.timeInMillis)
                     it.forEach { classEntity ->
@@ -114,7 +94,7 @@ class AlarmReceiver : BroadcastReceiver() {
                                 set(Calendar.MINUTE, time?.substring(3, 5)?.toInt() ?: 0)
                                 set(Calendar.SECOND, 0)
                             }
-                            println("Alarm receiver " + calendar.time)
+//                            println("Alarm receiver " + calendar.time)
                             AlarmScheduleForSubject(context).alarmCreate(
                                 classId = classEntity.classEntity.id,
                                 time = calendar.timeInMillis
