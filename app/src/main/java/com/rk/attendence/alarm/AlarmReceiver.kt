@@ -18,7 +18,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.TextStyle
 import java.util.Calendar
@@ -75,12 +74,12 @@ class AlarmReceiver : BroadcastReceiver() {
             }.collect {
                 if (validateAlarm(context)) {
                     val c = Calendar.getInstance()
-                        c.apply {
-                            timeInMillis =
-                                LocalDate.now().plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC)
-                                    .toEpochMilli()
-                            set(Calendar.HOUR_OF_DAY, 1)
-                            set(Calendar.MINUTE, 0)
+                    c.apply {
+                        timeInMillis =
+                            LocalDate.now().plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC)
+                                .toEpochMilli()
+                        set(Calendar.HOUR_OF_DAY, 1)
+                        set(Calendar.MINUTE, 0)
                     }
 //                    println(c.time)
                     LocalData.setBoolean(LocalData.BROADCAST_CLASS, false)
