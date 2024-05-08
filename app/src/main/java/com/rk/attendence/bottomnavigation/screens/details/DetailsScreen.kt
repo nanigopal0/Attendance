@@ -40,6 +40,7 @@ import com.rk.attendence.calendar.CalendarUiState
 import com.rk.attendence.calendar.CalendarViewModel
 import com.rk.attendence.calendar.CalendarWidget
 import com.rk.attendence.calendar.util.DateUtil
+import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -53,6 +54,7 @@ fun DetailsScreen(sharedViewmodel: SharedViewmodel) {
     var expandLazyListItem by remember {
         mutableStateOf("")
     }
+
     val context = LocalContext.current
 //    val configuration = LocalConfiguration.current
 //    val maxHeight = configuration.screenHeightDp - 64 - 80
@@ -60,6 +62,7 @@ fun DetailsScreen(sharedViewmodel: SharedViewmodel) {
     val sharedState = sharedViewmodel.state.collectAsState()
 
     LaunchedEffect(key1 = sharedState.value.semesterToClassToAttendance) {
+        println("detail screen launched effect")
         detailsViewmodel.initialiseVar(
             semesterEntity = sharedViewmodel.state.value.semesterEntity,
             semesterToClassToAttendance = sharedViewmodel.state.value.semesterToClassToAttendance
@@ -92,8 +95,24 @@ fun DetailsScreen(sharedViewmodel: SharedViewmodel) {
                 }
             }
         )
-        state.value.showAllClassInParticularDay.forEach { classContent ->
 
+        TextButton(onClick = { onClickEvent(DetailsEvent.ShowExtraClassDialog) }) {
+            Text(text = "Add an extra class")
+        }
+
+        if (state.value.isExtraClassDialogShown) {
+            val todayClasses = state.value.showAllClassInParticularDay.map { it.classEntity }
+            val remainingClasses = state.value.allClasses.minus(todayClasses.toSet())
+            val localDate = LocalDate.of(
+                uiState.yearMonth.year,
+                uiState.yearMonth.month,
+                detailsViewmodel.selectedDate.dayOfMonth
+            )
+            ExtraClassDialogScreen(remainingClasses, localDate, onClickEvent)
+        }
+
+        //Show all classes in the particular date
+        state.value.showAllClassInParticularDay.forEach { classContent ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -120,11 +139,19 @@ fun DetailsScreen(sharedViewmodel: SharedViewmodel) {
                         }
                         Row {
                             Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = classContent.classEntity.className,
-//                                    fontSize = 20.sp,
-                                    style = MaterialTheme.typography.titleMedium
-                                )
+                                Row {
+
+                                    Text(
+                                        text = classContent.classEntity.className,
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                    Text(
+                                        text = if (classContent.isExtraClass) "(Extra)" else "",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = Color(0xFF762D8A),
+                                        modifier = Modifier.padding(start = 2.dp)
+                                    )
+                                }
                                 classContent.classEntity.classStartTime[detailsViewmodel.selectedDate.dayOfWeek.getDisplayName(
                                     TextStyle.FULL,
                                     Locale.getDefault()
@@ -138,12 +165,13 @@ fun DetailsScreen(sharedViewmodel: SharedViewmodel) {
                                 if (expandLazyListItem == classContent.classEntity.className) {
 
                                     Row {
-                                        if (classContent.isPresent) Text(
-                                            text = "Present",
-                                            color = Color(0xFF1CCF27),
-                                            modifier = Modifier.align(Alignment.CenterVertically),
-                                            style = MaterialTheme.typography.titleMedium
-                                        )
+                                        if (classContent.isPresent)
+                                            Text(
+                                                text = "Present",
+                                                color = Color(0xFF1CCF27),
+                                                modifier = Modifier.align(Alignment.CenterVertically),
+                                                style = MaterialTheme.typography.titleMedium
+                                            )
                                         else if (classContent.isAbsent)
                                             Text(
                                                 text = "Absent",

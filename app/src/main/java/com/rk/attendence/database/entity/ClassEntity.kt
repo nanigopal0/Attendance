@@ -12,5 +12,5 @@ data class ClassEntity(
     val classStartTime: Map<String, String>, //First is the day and the next is the time
     val present: Int,
     val absent: Int,
-    val cancel: Int
+    val cancel: Int,
 )

@@ -1,5 +1,7 @@
 package com.rk.attendence.bottomnavigation.screens.setting
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,15 +28,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rk.attendence.bottomnavigation.screens.setting.deletesem.DeleteSemester
-import com.rk.attendence.bottomnavigation.screens.setting.updatesem.UpdateSemesterDialog
 import com.rk.attendence.bottomnavigation.screens.shared.SharedViewmodel
 import com.rk.attendence.sharedpref.LocalData
 
@@ -51,8 +54,13 @@ fun Settings(sharedViewmodel: SharedViewmodel, onClick: (Int) -> Unit) {
     var pressOffset by remember {
         mutableStateOf(DpOffset.Zero)
     }
+    val context = LocalContext.current
+
     LaunchedEffect(key1 = sharedState.value) {
-        settingsViewmodel.initialiseVar(sharedState.value.semesterToClassToAttendance)
+        settingsViewmodel.initialiseVar(
+            sharedState.value.semesterToClassToAttendance,
+            sharedState.value.semesterList
+        )
     }
     Column(
         modifier = Modifier
@@ -73,7 +81,8 @@ fun Settings(sharedViewmodel: SharedViewmodel, onClick: (Int) -> Unit) {
         Spacer(modifier = Modifier.height(20.dp))
         Text(
             text = "Total attendance ${settingState.value.totalAttendance}%",
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.primary
         )
         HorizontalDivider(
             color = Color.LightGray,
@@ -121,9 +130,6 @@ fun Settings(sharedViewmodel: SharedViewmodel, onClick: (Int) -> Unit) {
             }
         }
 
-        if (settingState.value.showUpdateSemDialog)
-            UpdateSemesterDialog(onClickEvent, settingState.value.currentSemester.semesterName)
-
         if (settingState.value.showDeleteSemDialog)
             DeleteSemester(onClickEvent, settingState.value.currentSemester.semesterName)
 
@@ -146,12 +152,12 @@ fun Settings(sharedViewmodel: SharedViewmodel, onClick: (Int) -> Unit) {
         )
         TextButton(
             onClick = {
-                onClickEvent(SettingEvent.ShowUpdateSemesterDialog)
+                onClick(3)
             },
             colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface)
         ) {
             Text(
-                text = "Update Semester",
+                text = "All Classes",
                 style = MaterialTheme.typography.titleMedium
             )
         }
@@ -159,6 +165,22 @@ fun Settings(sharedViewmodel: SharedViewmodel, onClick: (Int) -> Unit) {
             color = Color.LightGray,
             modifier = Modifier.padding(vertical = 5.dp)
         )
+        TextButton(
+            onClick = {
+                onClick(4)
+            },
+            colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface)
+        ) {
+            Text(
+                text = "Edit Semester",
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+        HorizontalDivider(
+            color = Color.LightGray,
+            modifier = Modifier.padding(vertical = 5.dp)
+        )
+
         TextButton(
             onClick = {
                 onClick.invoke(1)
@@ -188,6 +210,36 @@ fun Settings(sharedViewmodel: SharedViewmodel, onClick: (Int) -> Unit) {
                 color = Color.Red
             )
         }
+
+        HorizontalDivider(
+            color = Color.LightGray,
+            modifier = Modifier.padding(vertical = 5.dp)
+        )
+        TextButton(
+            onClick = {
+                context.startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://docs.google.com/forms/d/e/1FAIpQLSdKbiQXdp7bhe3LZzbvGYmFMtz85mIuqPr8XKoe98vCOyd7tA/viewform?usp=sf_link")
+                    )
+                )
+            },
+            colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface)
+        ) {
+            Text(
+                text = "Feedback",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Medium
+            )
+        }
+
+        Text(
+            text = "version 1.0.0",
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 20.dp)
+        )
 
     }
 }

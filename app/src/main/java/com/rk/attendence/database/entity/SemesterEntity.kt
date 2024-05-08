@@ -11,5 +11,5 @@ data class SemesterEntity(
     val studentName: String,
     val semesterName: String,
     val days: List<String>,
-    val dateCreation: LocalDate
+    val dateCreation: LocalDate,
 )

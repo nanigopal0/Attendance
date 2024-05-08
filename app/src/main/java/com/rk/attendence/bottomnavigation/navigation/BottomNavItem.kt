@@ -13,7 +13,7 @@ sealed class BottomNavItem(
     val route: String,
     val hasNew: Boolean,
     val selectedIcon: ImageVector,
-    val unselectedIcon: ImageVector
+    val unselectedIcon: ImageVector,
 ) {
 
     data object DashBoard : BottomNavItem(

@@ -102,6 +102,7 @@ fun Notification(onClick: () -> Unit) {
                 .setData(
                     Uri.parse("package:${context.packageName}")
                 )
+
         Box(modifier = Modifier.fillMaxSize()) {
             Button(
                 onClick = {

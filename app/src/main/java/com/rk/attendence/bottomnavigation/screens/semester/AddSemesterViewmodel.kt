@@ -2,6 +2,7 @@ package com.rk.attendence.bottomnavigation.screens.semester
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rk.attendence.bottomnavigation.screens.classes.Days
 import com.rk.attendence.database.dbconnection.SingletonDBConnection
 import com.rk.attendence.database.entity.SemesterEntity
 import com.rk.attendence.database.repository.SemesterRepository
@@ -60,8 +61,6 @@ class AddSemesterViewmodel(
                 _state.update { it.copy(semName = addSemesterEvent.name) }
                 validateAddBtn()
             }
-
-            else -> {}
         }
     }
 }
@@ -69,7 +68,16 @@ class AddSemesterViewmodel(
 
 data class AddSemesterContent(
     val semName: String = "",
-    val atLeastOneChecked: Boolean = false
+    val atLeastOneChecked: Boolean = false,
+    val daysList: List<String> = listOf(
+        Days.MONDAY,
+        Days.TUESDAY,
+        Days.WEDNESDAY,
+        Days.THURSDAY,
+        Days.FRIDAY,
+        Days.SATURDAY,
+        Days.SUNDAY
+    ),
 )
 
 sealed interface AddSemesterEvent {

@@ -5,17 +5,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.rk.attendence.bottomnavigation.screens.setting.SettingEvent
 
 @Composable
 fun DeleteSemester(
     onClickEvent: (settingEvent: SettingEvent) -> Unit,
-    sem: String
+    sem: String,
 ) {
 //    val deleteSemesterViewmodel: DeleteSemesterViewmodel =
 //        viewModel(factory = object : ViewModelProvider.Factory {
@@ -39,7 +39,8 @@ fun DeleteSemester(
                     onClickEvent(SettingEvent.DeleteSemester)
                     onClickEvent(SettingEvent.HideDeleteSemDialog)
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
             ) {
                 Text(text = "Delete")
             }

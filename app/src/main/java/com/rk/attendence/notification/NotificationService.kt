@@ -12,7 +12,7 @@ import com.rk.attendence.R
 import com.rk.attendence.sharedpref.LocalData
 
 class NotificationService(
-    private val context: Context
+    private val context: Context,
 ) {
 
     private val notificationManager =

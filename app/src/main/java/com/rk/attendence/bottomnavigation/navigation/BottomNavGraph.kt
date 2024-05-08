@@ -16,6 +16,7 @@ import com.rk.attendence.bottomnavigation.screens.details.DetailsScreen
 import com.rk.attendence.bottomnavigation.screens.semester.AddSemesterScreen
 import com.rk.attendence.bottomnavigation.screens.semester.EditSemesterScreen
 import com.rk.attendence.bottomnavigation.screens.setting.Settings
+import com.rk.attendence.bottomnavigation.screens.setting.allclass.AllClassScreen
 import com.rk.attendence.bottomnavigation.screens.setting.daterangepicker.DateRangePickerScreen
 import com.rk.attendence.bottomnavigation.screens.setting.getpercentage.GetPercentage
 import com.rk.attendence.bottomnavigation.screens.setting.notification.Notification
@@ -48,6 +49,8 @@ fun BottomNavGraph(navHostController: NavHostController) {
                 when (it) {
                     1 -> navHostController.navigate(NavGraph.GET_PERCENTAGE_SCREEN)
                     2 -> navHostController.navigate(NavGraph.NOTIFICATION_SCREEN)
+                    3 -> navHostController.navigate(NavGraph.ALL_CLASS_SCREEN)
+                    4 -> navHostController.navigate(NavGraph.EDIT_SEMESTER)
                 }
             }
         }
@@ -64,7 +67,7 @@ fun BottomNavGraph(navHostController: NavHostController) {
 
 fun NavGraphBuilder.navGraph(
     navHostController: NavHostController,
-    sharedViewmodel: SharedViewmodel
+    sharedViewmodel: SharedViewmodel,
 ) {
     navigation(route = NavGraph.NAVIGATION, startDestination = NavGraph.SEARCH) {
         composable(NavGraph.SEARCH) { Log.d("TAG", "navGraph: Search screen") }
@@ -81,7 +84,9 @@ fun NavGraphBuilder.navGraph(
             }
         }
         composable(NavGraph.EDIT_CLASS) {
-            EditClassScreen()
+            EditClassScreen(sharedViewmodel) {
+                navHostController.popBackStack()
+            }
         }
         composable(NavGraph.ADD_SEMESTER) {
             AddSemesterScreen {
@@ -90,7 +95,9 @@ fun NavGraphBuilder.navGraph(
             }
         }
         composable(NavGraph.EDIT_SEMESTER) {
-            EditSemesterScreen()
+            EditSemesterScreen(sharedViewmodel) {
+                navHostController.popBackStack()
+            }
         }
         composable(NavGraph.GET_PERCENTAGE_SCREEN) {
             GetPercentage(sharedViewmodel = sharedViewmodel) {
@@ -104,6 +111,14 @@ fun NavGraphBuilder.navGraph(
         }
         composable(NavGraph.NOTIFICATION_SCREEN) {
             Notification { navHostController.popBackStack() }
+        }
+        composable(NavGraph.ALL_CLASS_SCREEN) {
+            AllClassScreen(sharedViewmodel = sharedViewmodel) {
+                when (it) {
+                    1 -> navHostController.navigate(NavGraph.EDIT_SEMESTER)
+                    2 -> navHostController.navigate(NavGraph.EDIT_CLASS)
+                }
+            }
         }
     }
 }
@@ -119,4 +134,5 @@ object NavGraph {
     const val GET_PERCENTAGE_SCREEN = "get_percentage_screen"
     const val DATE_RANGE_PICKER_SCREEN = "date_range_picker_screen"
     const val NOTIFICATION_SCREEN = "notification_screen"
+    const val ALL_CLASS_SCREEN = "all_class_screen"
 }

@@ -18,13 +18,17 @@ import java.time.LocalDate
 class SettingsViewmodel(
     private val semesterRepository: SemesterRepository = SingletonDBConnection.semesterRepo,
     private val classRepository: ClassRepository = SingletonDBConnection.classRepo,
-    private val attendanceRepository: AttendanceRepository = SingletonDBConnection.attendanceRepo
+    private val attendanceRepository: AttendanceRepository = SingletonDBConnection.attendanceRepo,
 ) : ViewModel() {
     private var _state = MutableStateFlow(SettingsContent())
     val state: StateFlow<SettingsContent> = _state
-
-    fun initialiseVar(semesterToClassToAttendance: SemesterToClassToAttendance?) {
+    private var semesterList: List<SemesterEntity> = emptyList()
+    fun initialiseVar(
+        semesterToClassToAttendance: SemesterToClassToAttendance?,
+        semesterList: List<SemesterEntity>,
+    ) {
         if (semesterToClassToAttendance != null) {
+            this.semesterList = semesterList
             val classEntities =
                 semesterToClassToAttendance.classToAttendance.map { it?.classEntity }
             var attend = 0
@@ -62,6 +66,15 @@ class SettingsViewmodel(
         semesterRepository.deleteSemester(_state.value.currentSemester)
     }
 
+    private fun updateLocalData() {
+        val randomSemId = try {
+            semesterList.map { it.id }.random()
+        } catch (e: Exception) {
+            0
+        }
+        LocalData.setInt(LocalData.CURRENT_SEMESTER_ID, randomSemId)
+    }
+
     private suspend fun deleteClassIncludingSem() {
         classRepository.deleteClassCorrespondingSemId(_state.value.currentSemester.id)
     }
@@ -85,6 +98,7 @@ class SettingsViewmodel(
                     deleteSem()
                     deleteAttendanceIncludingSem()
                     deleteClassIncludingSem()
+                    updateLocalData()
                 }
             }
         }
@@ -106,7 +120,7 @@ data class SettingsContent(
     val totalAbsent: Int = 0,
     val totalCancel: Int = 0,
     val showUpdateSemDialog: Boolean = false,
-    val showDeleteSemDialog: Boolean = false
+    val showDeleteSemDialog: Boolean = false,
 )
 
 sealed interface SettingEvent {
@@ -116,4 +130,5 @@ sealed interface SettingEvent {
     data object ShowDeleteSemDialog : SettingEvent
     data object HideDeleteSemDialog : SettingEvent
     data object DeleteSemester : SettingEvent
+
 }

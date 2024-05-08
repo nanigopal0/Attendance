@@ -16,6 +16,9 @@ interface AttendanceDao {
     @Delete
     suspend fun deleteAttendance(dayEntity: AttendanceEntity)
 
+    @Query("DELETE FROM attendance WHERE classId =:classId")
+    suspend fun deleteAttendanceCorrespondingClass(classId: Int)
+
     @Query("SELECT * FROM attendance")
     fun getAllAttendance(): Flow<List<AttendanceEntity>>
 
@@ -25,7 +28,7 @@ interface AttendanceDao {
     @Query("SELECT * FROM attendance WHERE date BETWEEN :startDate and :endDate ")
     fun getAttendanceFromRange(
         startDate: LocalDate,
-        endDate: LocalDate
+        endDate: LocalDate,
     ): Flow<List<AttendanceEntity>>
 
     @Query("SELECT * FROM attendance WHERE date =:date")

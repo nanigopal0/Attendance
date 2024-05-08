@@ -26,7 +26,7 @@ import java.util.Locale
 
 class AddClassViewmodel(
     private val semesterRepository: SemesterRepository = SingletonDBConnection.semesterRepo,
-    private val classRepository: ClassRepository = SingletonDBConnection.classRepo
+    private val classRepository: ClassRepository = SingletonDBConnection.classRepo,
 ) : ViewModel() {
     private var _state = MutableStateFlow(AddClassContent())
     val state: StateFlow<AddClassContent> = _state
@@ -239,7 +239,7 @@ data class AddClassContent(
         semesterName = "",
         days = emptyList(),
         dateCreation = LocalDate.now()
-    )
+    ),
 )
 
 object Days {

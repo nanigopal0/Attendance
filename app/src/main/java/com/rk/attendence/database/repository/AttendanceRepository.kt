@@ -20,9 +20,12 @@ class AttendanceRepository(private val attendanceDao: AttendanceDao) {
 
     fun getAttendanceFromRange(
         startDate: LocalDate,
-        endDate: LocalDate
+        endDate: LocalDate,
     ): Flow<List<AttendanceEntity>> =
         attendanceDao.getAttendanceFromRange(startDate, endDate)
+
+    suspend fun deleteAttendanceCorrespondingClass(clasId: Int) =
+        attendanceDao.deleteAttendanceCorrespondingClass(clasId)
 
     fun getAttendanceInaDay(date: Long): Flow<List<AttendanceEntity>> =
         attendanceDao.getAttendanceInaDay(date)

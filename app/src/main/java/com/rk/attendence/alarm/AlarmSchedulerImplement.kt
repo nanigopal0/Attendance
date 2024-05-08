@@ -46,7 +46,7 @@ class AlarmSchedulerImplement(private val context: Context) {
 //                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 //                )
 //            )
-            alarmManager.set(
+            alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP,
                 time,
                 PendingIntent.getBroadcast(

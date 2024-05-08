@@ -44,13 +44,13 @@ class SemesterRepository(private val semesterDao: SemesterDao) {
             val list = mutableListOf<ClassContent>()
             stcta?.classToAttendance?.forEach { cta ->
                 if (cta != null) {
-                    val present = cta.attendanceList.filter { it?.present == true }.size
-                    val absent = cta.attendanceList.filter { it?.absent == true }.size
+//                    val present = cta.attendanceList.filter { it?.present == true }.size
+//                    val absent = cta.attendanceList.filter { it?.absent == true }.size
                     list.add(
                         ClassContent(
                             classEntity = cta.classEntity,
-                            present = present,
-                            absent = absent
+//                            present = present,
+//                            absent = absent
                         )
                     )
                 }
@@ -65,7 +65,7 @@ class SemesterRepository(private val semesterDao: SemesterDao) {
 
     fun getAllClassAndAttendance(
         id: Int,
-        day: String
+        day: String,
     ): Flow<List<ClassContent>?> {
         return semesterDao.getAllClassAndAttendance(id).map { stcta ->
             val list = mutableListOf<ClassContent>()
@@ -80,8 +80,6 @@ class SemesterRepository(private val semesterDao: SemesterDao) {
                     list.add(
                         ClassContent(
                             classEntity = cta.classEntity,
-                            present = cta.classEntity.present,
-                            absent = cta.classEntity.absent,
                             isTodayPresent = todayAttendance?.present ?: false,
                             isTodayAbsent = todayAttendance?.absent ?: false,
                             isTodayCancel = todayAttendance?.cancel ?: false

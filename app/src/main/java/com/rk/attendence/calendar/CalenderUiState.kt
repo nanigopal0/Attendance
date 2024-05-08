@@ -5,7 +5,7 @@ import java.time.YearMonth
 
 data class CalendarUiState(
     val yearMonth: YearMonth,
-    val dates: List<Date>
+    val dates: List<Date>,
 ) {
     companion object {
         val Init = CalendarUiState(
@@ -16,7 +16,7 @@ data class CalendarUiState(
 
     data class Date(
         val dayOfMonth: String,
-        val isSelected: Boolean
+        val isSelected: Boolean,
     ) {
         companion object {
             val Empty = Date("", false)

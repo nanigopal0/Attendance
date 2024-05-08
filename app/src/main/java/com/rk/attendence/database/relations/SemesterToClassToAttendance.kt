@@ -13,5 +13,5 @@ data class SemesterToClassToAttendance(
         parentColumn = "id",
         entityColumn = "semesterId"
     )
-    val classToAttendance: List<ClassToAttendance?>
+    val classToAttendance: List<ClassToAttendance?>,
 )

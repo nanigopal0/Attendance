@@ -136,7 +136,7 @@ fun ContentItem(
     yearMonth: YearMonth,
     date: CalendarUiState.Date,
     onClickListener: (CalendarUiState.Date) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier

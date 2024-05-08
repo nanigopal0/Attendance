@@ -15,7 +15,7 @@ import java.util.Locale
 
 class DashBoardViewmodel(
     private val attendanceRepository: AttendanceRepository = SingletonDBConnection.attendanceRepo,
-    private val classRepository: ClassRepository = SingletonDBConnection.classRepo
+    private val classRepository: ClassRepository = SingletonDBConnection.classRepo,
 ) : ViewModel() {
     private val currentDay =
         LocalDate.now().dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
@@ -57,13 +57,11 @@ class DashBoardViewmodel(
                         cancel = false,
                         classId = classId
                     )
-                    var present = 0
-                    var cancel = 0
-                    if (dashboardEvent.classContent.isTodayPresent)
-                        present = dashboardEvent.classContent.present - 1
-                    if (dashboardEvent.classContent.isTodayCancel)
-                        cancel = dashboardEvent.classContent.cancel - 1
-                    val absent: Int = dashboardEvent.classContent.absent + 1
+                    var present = dashboardEvent.classContent.classEntity.present
+                    var cancel = dashboardEvent.classContent.classEntity.cancel
+                    if (dashboardEvent.classContent.isTodayPresent) present--
+                    if (dashboardEvent.classContent.isTodayCancel) cancel--
+                    val absent = dashboardEvent.classContent.classEntity.absent + 1
                     updateAttendanceAndClass(
                         attendanceEntity,
                         dashboardEvent.classContent.classEntity.copy(
@@ -88,13 +86,11 @@ class DashBoardViewmodel(
                         cancel = false,
                         classId = classId
                     )
-                    var absent = 0
-                    var cancel = 0
-                    if (dashboardEvent.classContent.isTodayAbsent)
-                        absent = dashboardEvent.classContent.absent - 1
-                    if (dashboardEvent.classContent.isTodayCancel)
-                        cancel = dashboardEvent.classContent.cancel - 1
-                    val present = dashboardEvent.classContent.present + 1
+                    var absent = dashboardEvent.classContent.classEntity.absent
+                    var cancel = dashboardEvent.classContent.classEntity.cancel
+                    if (dashboardEvent.classContent.isTodayAbsent) absent--
+                    if (dashboardEvent.classContent.isTodayCancel) cancel--
+                    val present = dashboardEvent.classContent.classEntity.present + 1
                     updateAttendanceAndClass(
                         attendanceEntity,
                         dashboardEvent.classContent.classEntity.copy(
@@ -119,13 +115,11 @@ class DashBoardViewmodel(
                         cancel = true,
                         classId = classId
                     )
-                    var absent = 0
-                    var present = 0
-                    if (dashboardEvent.classContent.isTodayAbsent)
-                        absent = dashboardEvent.classContent.absent - 1
-                    if (dashboardEvent.classContent.isTodayPresent)
-                        present = dashboardEvent.classContent.present - 1
-                    val cancel = dashboardEvent.classContent.cancel + 1
+                    var absent = dashboardEvent.classContent.classEntity.absent
+                    var present = dashboardEvent.classContent.classEntity.present
+                    if (dashboardEvent.classContent.isTodayAbsent) absent--
+                    if (dashboardEvent.classContent.isTodayPresent) present--
+                    val cancel = dashboardEvent.classContent.classEntity.cancel + 1
                     updateAttendanceAndClass(
                         attendanceEntity,
                         dashboardEvent.classContent.classEntity.copy(
@@ -142,12 +136,12 @@ class DashBoardViewmodel(
 
 data class ClassContent(
     val classEntity: ClassEntity,
-    val present: Int = 0,
-    val absent: Int = 0,
-    val cancel: Int = 0,
+//    val present: Int = 0,
+//    val absent: Int = 0,
+//    val cancel: Int = 0,
     val isTodayPresent: Boolean = false,
     val isTodayAbsent: Boolean = false,
-    val isTodayCancel: Boolean = false
+    val isTodayCancel: Boolean = false,
 )
 
 sealed interface DashboardEvent {

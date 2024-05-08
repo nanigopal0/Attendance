@@ -10,6 +10,7 @@ import com.rk.attendence.database.relations.ClassToAttendance
 import com.rk.attendence.database.relations.SemesterToClassToAttendance
 import com.rk.attendence.database.repository.AttendanceRepository
 import com.rk.attendence.database.repository.ClassRepository
+import com.rk.attendence.sharedpref.LocalData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -21,7 +22,7 @@ import java.util.Locale
 
 class DetailsViewmodel(
     private val attendanceRepository: AttendanceRepository = SingletonDBConnection.attendanceRepo,
-    private val classRepository: ClassRepository = SingletonDBConnection.classRepo
+    private val classRepository: ClassRepository = SingletonDBConnection.classRepo,
 ) : ViewModel() {
 
 
@@ -36,20 +37,21 @@ class DetailsViewmodel(
         0, "", "", emptyList(), LocalDate.now()
     )
     private lateinit var semToClassToAttend: SemesterToClassToAttendance
+
 //    private val currentDay =
 //        LocalDate.now().dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
 
 
     fun initialiseVar(
         semesterEntity: SemesterEntity,
-        semesterToClassToAttendance: SemesterToClassToAttendance?
+        semesterToClassToAttendance: SemesterToClassToAttendance?,
     ) {
         currentSemester = semesterEntity
         semToClassToAttend = semesterToClassToAttendance ?: SemesterToClassToAttendance(
             SemesterEntity(0, "", "", emptyList(), LocalDate.now()), emptyList()
         )
-        getAllAttendance()
         getAllClasses()
+        getAllAttendance()
     }
 
 
@@ -66,6 +68,31 @@ class DetailsViewmodel(
         selectedDate = localDate
         val list = mutableListOf<AllClassShow>()
         if (localDate >= currentSemester.dateCreation) {
+
+            //Get the extra classes
+            val getClassesInADay: List<ClassEntity> =
+                allClassesSeparateDay[dayName]?.map { it.classEntity } ?: emptyList()
+            val remainingClasses = state.value.allClasses.minus(getClassesInADay.toSet())
+
+            remainingClasses.forEach { classEntity ->
+                val getClassToAttend =
+                    semToClassToAttend.classToAttendance.find { it?.classEntity?.id == classEntity.id }
+                val attendance =
+                    getClassToAttend?.attendanceList?.find { it?.id == "$id${classEntity.id}".toLong() }
+                if (attendance != null) {
+                    list.add(
+                        AllClassShow(
+                            classEntity = classEntity,
+                            isPresent = attendance.present,
+                            isAbsent = attendance.absent,
+                            isCancel = attendance.cancel,
+                            isExtraClass = true
+                        )
+                    )
+                }
+            }
+
+            //Get the all classes attendance in particular day
             allClassesSeparateDay[dayName]?.forEach { cta ->
                 val attendanceEntity =
                     cta.attendanceList.find { a -> a?.id == "$id${cta.classEntity.id}".toLong() }
@@ -80,9 +107,7 @@ class DetailsViewmodel(
                 )
             }
         }
-
         _state.update { it.copy(showAllClassInParticularDay = list) }
-
     }
 
     fun isExceedCurrentDate(): Boolean {
@@ -103,13 +128,13 @@ class DetailsViewmodel(
                 }
             }
             allClassesSeparateDay = day
-            if (state.value.showAllClassInParticularDay.isEmpty())
+            if (state.value.showAllClassInParticularDay.isEmpty()) {
                 getAttendanceInDay(
                     nowLocalDate.year,
                     nowLocalDate.month,
                     nowLocalDate.dayOfMonth
                 )
-            else {
+            } else {
                 getAttendanceInDay(
                     selectedDate.year,
                     selectedDate.month,
@@ -127,15 +152,14 @@ class DetailsViewmodel(
         }
     }
 
+    private fun createExtraAttendance(attendance: AttendanceEntity) {
+        viewModelScope.launch {
+            attendanceRepository.upsertAttendance(attendance)
+        }
+    }
+
     fun onClickEventFunction(detailsEvent: DetailsEvent) {
         when (detailsEvent) {
-            DetailsEvent.AllClass -> {
-                _state.update { it.copy(isAllClassShown = !state.value.isAllClassShown) }
-            }
-
-            DetailsEvent.TodayClass -> {
-                _state.update { it.copy(isTodayClassShown = !state.value.isTodayClassShown) }
-            }
 
             is DetailsEvent.Absent -> {
                 if (!detailsEvent.classContent.isAbsent) {
@@ -150,13 +174,12 @@ class DetailsViewmodel(
                         cancel = false,
                         classId = classId
                     )
-                    var present = 0
-                    var cancel = 0
-                    if (detailsEvent.classContent.isPresent)
-                        present = detailsEvent.classContent.classEntity.present - 1
-                    if (detailsEvent.classContent.isCancel)
-                        cancel = detailsEvent.classContent.classEntity.cancel - 1
+                    var present = detailsEvent.classContent.classEntity.present
+                    var cancel = detailsEvent.classContent.classEntity.cancel
+                    if (detailsEvent.classContent.isPresent) present--
+                    if (detailsEvent.classContent.isCancel) cancel--
                     val absent = detailsEvent.classContent.classEntity.absent + 1
+                    println("Present$present absent$absent cancel$cancel")
                     updateAttendanceAndClass(
                         attendanceEntity,
                         detailsEvent.classContent.classEntity.copy(
@@ -181,13 +204,12 @@ class DetailsViewmodel(
                         cancel = false,
                         classId = classId
                     )
-                    var absent = 0
-                    var cancel = 0
-                    if (detailsEvent.classContent.isAbsent) absent =
-                        detailsEvent.classContent.classEntity.absent - 1
-                    if (detailsEvent.classContent.isCancel)
-                        cancel = detailsEvent.classContent.classEntity.cancel - 1
+                    var absent = detailsEvent.classContent.classEntity.absent
+                    var cancel = detailsEvent.classContent.classEntity.cancel
+                    if (detailsEvent.classContent.isAbsent) absent--
+                    if (detailsEvent.classContent.isCancel) cancel--
                     val present = detailsEvent.classContent.classEntity.present + 1
+                    println("Present$present absent$absent cancel$cancel")
                     updateAttendanceAndClass(
                         attendanceEntity,
                         detailsEvent.classContent.classEntity.copy(
@@ -212,13 +234,12 @@ class DetailsViewmodel(
                         cancel = true,
                         classId = classId
                     )
-                    var absent = 0
-                    var present = 0
-                    if (detailsEvent.classContent.isAbsent)
-                        absent = detailsEvent.classContent.classEntity.absent - 1
-                    if (detailsEvent.classContent.isPresent)
-                        present = detailsEvent.classContent.classEntity.present - 1
+                    var absent = detailsEvent.classContent.classEntity.absent
+                    var present = detailsEvent.classContent.classEntity.present
+                    if (detailsEvent.classContent.isAbsent) absent--
+                    if (detailsEvent.classContent.isPresent) present--
                     val cancel = detailsEvent.classContent.classEntity.cancel + 1
+                    println("Present$present absent$absent cancel$cancel")
                     updateAttendanceAndClass(
                         attendanceEntity,
                         detailsEvent.classContent.classEntity.copy(
@@ -246,27 +267,44 @@ class DetailsViewmodel(
                     attendanceRepository.upsertAttendance(attendanceEntity)
                 }
             }
+
+            DetailsEvent.HideExtraClassDialog -> _state.update { it.copy(isExtraClassDialogShown = false) }
+            DetailsEvent.ShowExtraClassDialog -> _state.update { it.copy(isExtraClassDialogShown = true) }
+            is DetailsEvent.AddExtraClass -> {
+                val id = "${detailsEvent.localDate.toEpochDay()}${detailsEvent.classId}"
+                val attendanceEntity = AttendanceEntity(
+                    id = id.toLong(),
+                    present = false,
+                    absent = false,
+                    cancel = false,
+                    semesterId = LocalData.getInt(LocalData.CURRENT_SEMESTER_ID),
+                    classId = detailsEvent.classId,
+                    date = detailsEvent.localDate
+                )
+                createExtraAttendance(attendanceEntity)
+            }
         }
     }
 }
 
 data class DetailsContent(
     val allClasses: List<ClassEntity> = emptyList(),
-    val isAllClassShown: Boolean = false,
-    val isTodayClassShown: Boolean = true,
-    val showAllClassInParticularDay: List<AllClassShow> = emptyList()
+    val isExtraClassDialogShown: Boolean = false,
+    val showAllClassInParticularDay: List<AllClassShow> = emptyList(),
 )
 
 data class AllClassShow(
     val classEntity: ClassEntity = ClassEntity(0, 0, "", emptyMap(), 0, 0, 0),
     val isPresent: Boolean = false,
     val isAbsent: Boolean = false,
-    val isCancel: Boolean = false
+    val isCancel: Boolean = false,
+    val isExtraClass: Boolean = false,
 )
 
 sealed interface DetailsEvent {
-    data object TodayClass : DetailsEvent
-    data object AllClass : DetailsEvent
+    data object ShowExtraClassDialog : DetailsEvent
+    data object HideExtraClassDialog : DetailsEvent
+    data class AddExtraClass(val localDate: LocalDate, val classId: Int) : DetailsEvent
     data class Present(val classContent: AllClassShow) : DetailsEvent
     data class Absent(val classContent: AllClassShow) : DetailsEvent
     data class Cancel(val classContent: AllClassShow) : DetailsEvent

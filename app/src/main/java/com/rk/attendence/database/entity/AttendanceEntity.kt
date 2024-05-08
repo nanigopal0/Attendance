@@ -13,5 +13,5 @@ data class AttendanceEntity(
     val semesterId: Int,
     val cancel: Boolean,
     val classId: Int,    // Id of the class table
-    val date: LocalDate      // Current date
+    val date: LocalDate,      // Current date
 )

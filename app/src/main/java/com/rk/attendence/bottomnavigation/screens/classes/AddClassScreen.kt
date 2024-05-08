@@ -113,10 +113,6 @@ fun AddClassScreen(onClick: (Int) -> Unit) {
             }
             Row(modifier = Modifier.fillMaxWidth()) {
 
-                TextButton(onClick = { onClick(1) }) {
-                    Text(text = "Edit Sem")
-                }
-
                 TextButton(onClick = { onClick(2) }) {
                     Text(text = "Add a new semester")
                 }
@@ -211,7 +207,7 @@ fun AddClassScreen(onClick: (Int) -> Unit) {
 @Composable
 fun CheckBoxDay(
     text: String,
-    onClickViewmodel: (onClickEvent: OnClickEvent) -> Unit
+    onClickViewmodel: (onClickEvent: OnClickEvent) -> Unit,
 ) {
     val context = LocalContext.current
     var isCheck by rememberSaveable {

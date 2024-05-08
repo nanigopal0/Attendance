@@ -131,157 +131,60 @@ fun DashBoardScreen(sharedViewmodel: SharedViewmodel, function: (Int) -> Unit) {
                         state = scroll,
                         modifier = Modifier.padding(top = it.calculateTopPadding())
                     ) {
-                        items(state.value.todayClasses) { classEntity ->
+                        items(state.value.todayClasses) { classContent ->
                             val isNotChangeAttendance = remember {
-                                mutableStateOf(classEntity.isTodayAbsent || classEntity.isTodayPresent)
+                                mutableStateOf(classContent.isTodayAbsent || classContent.isTodayPresent)
                             }
                             Spacer(modifier = Modifier.height(5.dp))
 //                            if (expandLazyListItem != classEntity.classEntity.className) {
                             Row(modifier = Modifier
                                 .border(
                                     1.dp,
-                                    color = if (expandLazyListItem == classEntity.classEntity.className) MaterialTheme.colorScheme.onSurface else Color.LightGray,
-                                    RoundedCornerShape(if (expandLazyListItem == classEntity.classEntity.className) 10 else 20)
+                                    color = if (expandLazyListItem == classContent.classEntity.className) MaterialTheme.colorScheme.onSurface else Color.LightGray,
+                                    RoundedCornerShape(if (expandLazyListItem == classContent.classEntity.className) 10 else 20)
                                 )
                                 .clickable {
                                     expandLazyListItem = if (expandLazyListItem.isEmpty())
-                                        classEntity.classEntity.className
+                                        classContent.classEntity.className
                                     else ""
                                 }
                                 .padding(horizontal = 15.dp, vertical = 10.dp)) {
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(
-                                        text = classEntity.classEntity.className,
+                                        text = classContent.classEntity.className,
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Normal
                                     )
                                     Text(
-                                        text = dashBoardViewmodel.getStartTime(classEntity.classEntity),
+                                        text = dashBoardViewmodel.getStartTime(classContent.classEntity),
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Normal
                                     )
-//                                    if (expandLazyListItem == classEntity.classEntity.className) {
-//                                        Row {
-//                                            if (classEntity.isTodayPresent) Text(
-//                                                text = "Present",
-//                                                color = Color(0xFF1CCF27),
-//                                                modifier = Modifier.align(Alignment.CenterVertically),
-//                                                style = MaterialTheme.typography.titleMedium
-//                                            )
-//                                            else if (classEntity.isTodayAbsent)
-//                                                Text(
-//                                                    text = "Absent",
-//                                                    color = Color.Red,
-//                                                    modifier = Modifier.align(Alignment.CenterVertically),
-//                                                    style = MaterialTheme.typography.titleMedium
-//                                                )
-//                                            else if (classEntity.isTodayCancel)
-//                                                Text(
-//                                                    text = "Cancelled",
-//                                                    fontWeight = FontWeight.Medium,
-//                                                    color = Color.Red,
-//                                                    modifier = Modifier.align(Alignment.CenterVertically),
-//                                                    style = MaterialTheme.typography.titleMedium
-//                                                )
-//
-//                                            TextButton(
-//                                                onClick = {
-//                                                    isNotChangeAttendance.value = false
-//                                                },
-//                                                enabled = isNotChangeAttendance.value,
-//                                                modifier = Modifier
-//                                                    .padding(start = 10.dp)
-//                                                    .align(Alignment.CenterVertically)
-//                                            ) {
-//                                                Text(text = "Change")
-//                                            }
-//
-//                                        }
-//                                    }
-//                                    Box(modifier = Modifier.align(Alignment.CenterVertically)) {
-//                                        CircularProgressIndicator(
-//                                            progress = {
-//                                                try {
-//                                                    if (classEntity.present > 0 || classEntity.absent > 0)
-//                                                        classEntity.present.toFloat() / (classEntity.present + classEntity.absent)
-//                                                    else 0f
-//                                                } catch (e: Exception) {
-//                                                    0f
-//                                                }
-//                                            },
-//                                            color = MaterialTheme.colorScheme.primary,
-//                                            trackColor = MaterialTheme.colorScheme.primaryContainer,
-//                                            modifier = Modifier.size(55.dp)
-//                                        )
-//                                        Text(
-//                                            text = "${
-//                                                try {
-//                                                    classEntity.present * 100 / (classEntity.present + classEntity.absent)
-//                                                } catch (e: Exception) {
-//                                                    0
-//                                                }
-//                                            }% ",
-//                                            modifier = Modifier.align(Alignment.Center),
-//                                            style = MaterialTheme.typography.titleMedium
-//                                        )
-//                                    }
 
-
-//                            if (expandLazyListItem == classEntity.classEntity.className) {
-//                                val isNotChangeAttendance = remember {
-//                                    mutableStateOf(classEntity.isTodayAbsent || classEntity.isTodayPresent)
-//                                }
-//                                Row(
-//                                    modifier = Modifier
-//                                        .fillMaxWidth()
-//                                        .border(
-//                                            width = 1.dp,
-//                                            shape = RoundedCornerShape(10.dp),
-//                                            color = MaterialTheme.colorScheme.onBackground
-//                                        )
-//                                        .clickable {
-//                                            expandLazyListItem = ""
-//                                        }
-//                                ) {
-//                                    Column(
-//                                        modifier = Modifier
-//                                            .padding(15.dp)
-//                                            .weight(1f)
-//                                    ) {
-//
-//                                            Text(
-//                                                text = classEntity.classEntity.className,
-//                                                style = MaterialTheme.typography.titleMedium
-//                                            )
-//
-//                                        Text(text = dashBoardViewmodel.getStartTime(classEntity.classEntity),
-//                                            style = MaterialTheme.typography.titleMedium,
-//                                            fontWeight = FontWeight.Normal
-//                                        )
-                                    if (expandLazyListItem == classEntity.classEntity.className) {
-                                        Row {
-                                            if (classEntity.isTodayPresent) Text(
-                                                text = "Present",
-                                                color = Color(0xFF1CCF27),
+                                    Row {
+                                        if (classContent.isTodayPresent) Text(
+                                            text = "Present",
+                                            color = Color(0xFF1CCF27),
+                                            modifier = Modifier.align(Alignment.CenterVertically),
+                                            style = MaterialTheme.typography.titleSmall
+                                        )
+                                        else if (classContent.isTodayAbsent)
+                                            Text(
+                                                text = "Absent",
+                                                color = Color.Red,
                                                 modifier = Modifier.align(Alignment.CenterVertically),
-                                                style = MaterialTheme.typography.titleMedium
+                                                style = MaterialTheme.typography.titleSmall
                                             )
-                                            else if (classEntity.isTodayAbsent)
-                                                Text(
-                                                    text = "Absent",
-                                                    color = Color.Red,
-                                                    modifier = Modifier.align(Alignment.CenterVertically),
-                                                    style = MaterialTheme.typography.titleMedium
-                                                )
-                                            else if (classEntity.isTodayCancel)
-                                                Text(
-                                                    text = "Cancelled",
-                                                    fontWeight = FontWeight.Medium,
-                                                    color = Color.Red,
-                                                    modifier = Modifier.align(Alignment.CenterVertically),
-                                                    style = MaterialTheme.typography.titleMedium
-                                                )
+                                        else if (classContent.isTodayCancel)
+                                            Text(
+                                                text = "Cancelled",
+                                                fontWeight = FontWeight.Medium,
+                                                color = Color.Red,
+                                                modifier = Modifier.align(Alignment.CenterVertically),
+                                                style = MaterialTheme.typography.titleSmall
+                                            )
 
+                                        if (expandLazyListItem == classContent.classEntity.className) {
                                             TextButton(
                                                 onClick = {
                                                     isNotChangeAttendance.value = false
@@ -299,12 +202,12 @@ fun DashBoardScreen(sharedViewmodel: SharedViewmodel, function: (Int) -> Unit) {
 
                                 Column(
                                     modifier = Modifier
-                                        .padding(5.dp)
+                                        .padding(vertical = 5.dp)
                                 ) {
                                     Row(modifier = Modifier.align(Alignment.End)) {
-                                        if (expandLazyListItem == classEntity.classEntity.className) {
+                                        if (expandLazyListItem == classContent.classEntity.className) {
                                             Text(
-                                                text = "${classEntity.present} / ${classEntity.present + classEntity.absent}",
+                                                text = "${classContent.classEntity.present} / ${classContent.classEntity.present + classContent.classEntity.absent}",
                                                 modifier = Modifier
                                                     .align(Alignment.CenterVertically)
                                                     .padding(end = 4.dp),
@@ -315,8 +218,8 @@ fun DashBoardScreen(sharedViewmodel: SharedViewmodel, function: (Int) -> Unit) {
                                             CircularProgressIndicator(
                                                 progress = {
                                                     try {
-                                                        if (classEntity.present > 0 || classEntity.absent > 0)
-                                                            classEntity.present.toFloat() / (classEntity.present + classEntity.absent)
+                                                        if (classContent.classEntity.present > 0 || classContent.classEntity.absent > 0)
+                                                            classContent.classEntity.present.toFloat() / (classContent.classEntity.present + classContent.classEntity.absent)
                                                         else 0f
                                                     } catch (e: Exception) {
                                                         println(0f)
@@ -331,7 +234,7 @@ fun DashBoardScreen(sharedViewmodel: SharedViewmodel, function: (Int) -> Unit) {
                                             Text(
                                                 text = "${
                                                     try {
-                                                        classEntity.present * 100 / (classEntity.present + classEntity.absent)
+                                                        classContent.classEntity.present * 100 / (classContent.classEntity.present + classContent.classEntity.absent)
                                                     } catch (e: Exception) {
                                                         0
                                                     }
@@ -340,17 +243,17 @@ fun DashBoardScreen(sharedViewmodel: SharedViewmodel, function: (Int) -> Unit) {
                                             )
                                         }
                                     }
-                                    if (expandLazyListItem == classEntity.classEntity.className) {
+                                    if (expandLazyListItem == classContent.classEntity.className) {
                                         Row(modifier = Modifier.padding(top = 3.dp)) {
                                             IconButton(
                                                 onClick = {
                                                     onClickEvent(
                                                         DashboardEvent.Present(
-                                                            classEntity
+                                                            classContent
                                                         )
                                                     )
                                                     AlarmScheduleForSubject(context).cancelAlarm(
-                                                        classEntity.classEntity.id
+                                                        classContent.classEntity.id
                                                     )
                                                     isNotChangeAttendance.value = true
                                                 },
@@ -371,11 +274,11 @@ fun DashBoardScreen(sharedViewmodel: SharedViewmodel, function: (Int) -> Unit) {
                                                 onClick = {
                                                     onClickEvent(
                                                         DashboardEvent.Absent(
-                                                            classEntity
+                                                            classContent
                                                         )
                                                     )
                                                     AlarmScheduleForSubject(context).cancelAlarm(
-                                                        classEntity.classEntity.id
+                                                        classContent.classEntity.id
                                                     )
                                                     isNotChangeAttendance.value = true
                                                 },
@@ -396,11 +299,11 @@ fun DashBoardScreen(sharedViewmodel: SharedViewmodel, function: (Int) -> Unit) {
                                                 onClick = {
                                                     onClickEvent(
                                                         DashboardEvent.Cancel(
-                                                            classEntity
+                                                            classContent
                                                         )
                                                     )
                                                     AlarmScheduleForSubject(context).cancelAlarm(
-                                                        classEntity.classEntity.id
+                                                        classContent.classEntity.id
                                                     )
                                                     isNotChangeAttendance.value = true
                                                 },

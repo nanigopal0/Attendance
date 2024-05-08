@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
@@ -26,7 +28,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.rk.attendence.bottomnavigation.screens.classes.Days
 import kotlin.reflect.KFunction1
 
 
@@ -69,15 +70,37 @@ fun AddSemesterScreen(function: () -> Unit) {
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Medium
         )
+//
+//        DaysCheckbox(day = Days.MONDAY, onClickEvent)
+//        DaysCheckbox(day = Days.TUESDAY, onClickEvent)
+//        DaysCheckbox(day = Days.WEDNESDAY, onClickEvent)
+//        DaysCheckbox(day = Days.THURSDAY, onClickEvent)
+//        DaysCheckbox(day = Days.FRIDAY, onClickEvent)
+//        DaysCheckbox(day = Days.SATURDAY, onClickEvent)
+//        DaysCheckbox(day = Days.SUNDAY, onClickEvent)
 
-        DaysCheckbox(day = Days.MONDAY, onClickEvent)
-        DaysCheckbox(day = Days.TUESDAY, onClickEvent)
-        DaysCheckbox(day = Days.WEDNESDAY, onClickEvent)
-        DaysCheckbox(day = Days.THURSDAY, onClickEvent)
-        DaysCheckbox(day = Days.FRIDAY, onClickEvent)
-        DaysCheckbox(day = Days.SATURDAY, onClickEvent)
-        DaysCheckbox(day = Days.SUNDAY, onClickEvent)
 
+        LazyColumn {
+            items(state.value.daysList) { day ->
+                var isCheck by rememberSaveable {
+                    mutableStateOf(false)
+                }
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Checkbox(checked = isCheck,
+                        onCheckedChange = {
+                            isCheck = it
+                            onClickEvent(AddSemesterEvent.CheckedDay(day, isCheck))
+                        })
+
+                    Text(
+                        text = day,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+
+                }
+            }
+        }
         Button(
             onClick = {
                 onClickEvent(AddSemesterEvent.Add)

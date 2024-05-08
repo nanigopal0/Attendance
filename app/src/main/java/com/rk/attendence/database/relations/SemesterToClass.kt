@@ -12,7 +12,7 @@ data class SemesterToClass(
         parentColumn = "id",
         entityColumn = "semesterId"
     )
-    val classes: List<ClassEntity>
+    val classes: List<ClassEntity>,
 )
 
 
